@@ -31,6 +31,7 @@ int width = 800;
 int height = 600;
 GLuint loc1;
 GLuint loc2;
+glm::mat4 model_anim = glm::mat4(1.0f);
 
 // Shader Functions- click on + to expand
 #pragma region SHADER_FUNCTIONS
@@ -127,10 +128,6 @@ GLuint CompileShaders()
 // VBO Functions - click on + to expand
 #pragma region VBO_FUNCTIONS
 
-
-
-
-
 void generateObjectBufferTeapot () {
 	GLuint vp_vbo = 0;
 
@@ -190,8 +187,16 @@ void display(){
 	glUniformMatrix4fv (matrix_location, 1, GL_FALSE, glm::value_ptr(model));
 	glDrawArrays (GL_TRIANGLES, 0, teapot_vertex_count);
 
-	// bottom-right
-		
+	// bottom-right : Animated, perspective  projection
+	glm::mat4 persp_proj2 = glm::perspective(glm::radians(60.0f), (float)width / (float)height, 5.0f, 100.0f);
+
+	glViewport(width / 2, 0, width / 2, height / 2);
+	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, glm::value_ptr(persp_proj2));
+	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, glm::value_ptr(model_anim));
+	glDrawArrays(GL_TRIANGLES, 0, teapot_vertex_count);
+
+
 	// top-left : Static with Orthogonal projection
 	glm::mat4 ortho_proj = glm::ortho(-(float)width/32, (float)width/32, -(float)height/32, (float)height/32, 0.1f, 100.0f);
 	model = glm::rotate(glm::mat4(1.0f), glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -230,6 +235,7 @@ void updateScene() {
 		delta = 0.03f;
 	last_time = curr_time;
 
+	model_anim = glm::rotate(model_anim, glm::radians(0.1f), glm::vec3(0.0f, 1.0f, 0.0f));
 	// Draw the next frame
 	glutPostRedisplay();
 }
