@@ -192,7 +192,7 @@ void display(){
 
 	// bottom-right
 		
-	// top-left
+	// top-left : Static with Orthogonal projection
 	glm::mat4 ortho_proj = glm::ortho(-(float)width/32, (float)width/32, -(float)height/32, (float)height/32, 0.1f, 100.0f);
 	model = glm::rotate(glm::mat4(1.0f), glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -202,7 +202,19 @@ void display(){
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, glm::value_ptr(model));
 	glDrawArrays(GL_TRIANGLES, 0, teapot_vertex_count);
 
-	// top-right
+	// top-right : Static with lookAt view
+	model = glm::mat4(1.0f);
+	view = glm::lookAt(
+		glm::vec3(30.0f, 30.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(-1.0f, 1.0f, 0.0f)
+	);
+
+	glViewport(width / 2, height / 2, width / 2, height / 2);
+	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, glm::value_ptr(persp_proj));
+	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, glm::value_ptr(model));
+	glDrawArrays(GL_TRIANGLES, 0, teapot_vertex_count);
 
     glutSwapBuffers();
 }
