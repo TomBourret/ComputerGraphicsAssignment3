@@ -179,7 +179,7 @@ void display(){
 	//Here is where the code for the viewport lab will go, to get you started I have drawn a t-pot in the bottom left
 	//The model transform rotates the object by 45 degrees, the view transform sets the camera at -40 on the z-axis, and the perspective projection is setup using Antons method
 
-	// bottom-left
+	// bottom-left : Static, Perspective
 	glm::mat4 view = glm::translate (glm::mat4(1.0f), glm::vec3 (0.0, 0.0, -40.0));
 	glm::mat4 persp_proj = glm::perspective(glm::radians(45.0f), (float)width/(float)height, 0.1f, 100.0f);
 	glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -193,6 +193,14 @@ void display(){
 	// bottom-right
 		
 	// top-left
+	glm::mat4 ortho_proj = glm::ortho(-(float)width/32, (float)width/32, -(float)height/32, (float)height/32, 0.1f, 100.0f);
+	model = glm::rotate(glm::mat4(1.0f), glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+	glViewport(0, height/2, width / 2, height / 2);
+	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, glm::value_ptr(ortho_proj));
+	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, glm::value_ptr(model));
+	glDrawArrays(GL_TRIANGLES, 0, teapot_vertex_count);
 
 	// top-right
 
